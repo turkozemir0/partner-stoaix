@@ -5,15 +5,16 @@ import { usePathname, useRouter } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/lib/supabase/client"
 import { X, LayoutDashboard, Link2, TrendingUp, DollarSign, CreditCard, FileText, Settings, LogOut } from "lucide-react"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/links", label: "Referral Links", icon: Link2 },
-  { href: "/sales", label: "Sales", icon: TrendingUp },
-  { href: "/earnings", label: "Earnings", icon: DollarSign },
-  { href: "/payouts", label: "Payouts", icon: CreditCard },
-  { href: "/materials", label: "Materials", icon: FileText },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/", labelKey: "nav.dashboard", icon: LayoutDashboard },
+  { href: "/links", labelKey: "nav.links", icon: Link2 },
+  { href: "/sales", labelKey: "nav.sales", icon: TrendingUp },
+  { href: "/earnings", labelKey: "nav.earnings", icon: DollarSign },
+  { href: "/payouts", labelKey: "nav.payouts", icon: CreditCard },
+  { href: "/materials", labelKey: "nav.materials", icon: FileText },
+  { href: "/settings", labelKey: "nav.settings", icon: Settings },
 ]
 
 interface MobileNavProps {
@@ -25,9 +26,11 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const { t } = useTranslation()
 
   async function handleLogout() {
     await supabase.auth.signOut()
+    document.cookie = "session_started_at=; path=/; max-age=0"
     router.push("/login")
     router.refresh()
   }
@@ -60,7 +63,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
                 )}
               >
                 <item.icon className="h-4 w-4" />
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             )
           })}
@@ -71,7 +74,7 @@ export function MobileNav({ open, onClose }: MobileNavProps) {
             className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-muted-foreground rounded-lg hover:bg-gray-100 w-full"
           >
             <LogOut className="h-4 w-4" />
-            Sign out
+            {t("nav.signOut")}
           </button>
         </div>
       </div>

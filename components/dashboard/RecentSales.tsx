@@ -1,22 +1,27 @@
+"use client"
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import type { Conversion } from "@/lib/types"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 interface RecentSalesProps {
   conversions: Conversion[]
 }
 
 export function RecentSales({ conversions }: RecentSalesProps) {
+  const { t } = useTranslation()
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Recent Sales</CardTitle>
+        <CardTitle className="text-base">{t("recentSales.title")}</CardTitle>
       </CardHeader>
       <CardContent>
         {conversions.length === 0 ? (
           <p className="text-sm text-muted-foreground text-center py-8">
-            No conversions yet. Share your referral links to get started!
+            {t("recentSales.noConversions")}
           </p>
         ) : (
           <div className="space-y-4">

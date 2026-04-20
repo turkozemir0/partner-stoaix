@@ -2,16 +2,19 @@
 
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 interface EarningsChartProps {
   data: { month: string; earnings: number }[]
 }
 
 export function EarningsChart({ data }: EarningsChartProps) {
+  const { t } = useTranslation()
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Earnings Overview</CardTitle>
+        <CardTitle className="text-base">{t("chart.earningsOverview")}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="h-[300px]">
@@ -29,7 +32,7 @@ export function EarningsChart({ data }: EarningsChartProps) {
                 tickFormatter={(value) => `$${value}`}
               />
               <Tooltip
-                formatter={(value: number) => [`$${value.toFixed(2)}`, "Earnings"]}
+                formatter={(value: number) => [`$${value.toFixed(2)}`, t("chart.earnings")]}
                 contentStyle={{
                   borderRadius: "8px",
                   border: "1px solid hsl(var(--border))",

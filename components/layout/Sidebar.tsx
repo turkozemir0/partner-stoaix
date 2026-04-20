@@ -19,22 +19,23 @@ import {
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/links", label: "Referral Links", icon: Link2 },
-  { href: "/sales", label: "Sales", icon: TrendingUp },
-  { href: "/earnings", label: "Earnings", icon: DollarSign },
-  { href: "/payouts", label: "Payouts", icon: CreditCard },
-  { href: "/materials", label: "Materials", icon: FileText },
-  { href: "/settings", label: "Settings", icon: Settings },
+  { href: "/", labelKey: "nav.dashboard", icon: LayoutDashboard },
+  { href: "/links", labelKey: "nav.links", icon: Link2 },
+  { href: "/sales", labelKey: "nav.sales", icon: TrendingUp },
+  { href: "/earnings", labelKey: "nav.earnings", icon: DollarSign },
+  { href: "/payouts", labelKey: "nav.payouts", icon: CreditCard },
+  { href: "/materials", labelKey: "nav.materials", icon: FileText },
+  { href: "/settings", labelKey: "nav.settings", icon: Settings },
 ]
 
 const adminItems = [
-  { href: "/admin", label: "Overview", icon: Shield },
-  { href: "/admin/partners", label: "Partners", icon: Users },
-  { href: "/admin/conversions", label: "Conversions", icon: ArrowRightLeft },
-  { href: "/admin/payouts", label: "Payouts", icon: Wallet },
+  { href: "/admin", labelKey: "nav.adminOverview", icon: Shield },
+  { href: "/admin/partners", labelKey: "nav.adminPartners", icon: Users },
+  { href: "/admin/conversions", labelKey: "nav.adminConversions", icon: ArrowRightLeft },
+  { href: "/admin/payouts", labelKey: "nav.adminPayouts", icon: Wallet },
 ]
 
 interface SidebarProps {
@@ -45,9 +46,11 @@ export function Sidebar({ isAdmin }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
   const supabase = createClient()
+  const { t } = useTranslation()
 
   async function handleLogout() {
     await supabase.auth.signOut()
+    document.cookie = "session_started_at=; path=/; max-age=0"
     router.push("/login")
     router.refresh()
   }
@@ -74,7 +77,7 @@ export function Sidebar({ isAdmin }: SidebarProps) {
                 )}
               >
                 <item.icon className="h-4 w-4" />
-                {item.label}
+                {t(item.labelKey)}
               </Link>
             )
           })}
@@ -82,7 +85,7 @@ export function Sidebar({ isAdmin }: SidebarProps) {
           {isAdmin && (
             <>
               <div className="pt-4 pb-1 px-3">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Admin</span>
+                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{t("nav.admin")}</span>
               </div>
               {adminItems.map((item) => {
                 const isActive = pathname === item.href
@@ -98,7 +101,7 @@ export function Sidebar({ isAdmin }: SidebarProps) {
                     )}
                   >
                     <item.icon className="h-4 w-4" />
-                    {item.label}
+                    {t(item.labelKey)}
                   </Link>
                 )
               })}
@@ -111,7 +114,7 @@ export function Sidebar({ isAdmin }: SidebarProps) {
             className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-muted-foreground rounded-lg hover:bg-gray-100 hover:text-foreground transition-colors w-full"
           >
             <LogOut className="h-4 w-4" />
-            Sign out
+            {t("nav.signOut")}
           </button>
         </div>
       </div>

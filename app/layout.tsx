@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Plus_Jakarta_Sans, Inter } from "next/font/google"
 import "./globals.css"
+import { LanguageProvider } from "@/lib/i18n/LanguageContext"
 
 const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -25,9 +26,11 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="tr">
       <body className={`${jakarta.variable} ${inter.variable} antialiased`}>
-        {children}
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   )

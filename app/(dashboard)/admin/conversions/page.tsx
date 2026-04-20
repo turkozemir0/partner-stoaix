@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { formatCurrency, formatDate } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 import type { Partner } from "@/lib/types"
 
 interface ConversionRow {
@@ -15,6 +16,7 @@ interface ConversionRow {
 }
 
 export default function AdminConversionsPage() {
+  const { t } = useTranslation()
   const [conversions, setConversions] = useState<ConversionRow[]>([])
   const [partners, setPartners] = useState<Partner[]>([])
   const [loading, setLoading] = useState(true)
@@ -65,18 +67,18 @@ export default function AdminConversionsPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><p className="text-muted-foreground">Loading...</p></div>
+    return <div className="flex items-center justify-center h-64"><p className="text-muted-foreground">{t("common.loading")}</p></div>
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Conversions</h1>
+        <h1 className="text-2xl font-bold">{t("admin.conversions.title")}</h1>
         <button
           onClick={() => setShowDialog(true)}
           className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition-colors"
         >
-          Add Conversion
+          {t("admin.conversions.addConversion")}
         </button>
       </div>
 
@@ -84,12 +86,12 @@ export default function AdminConversionsPage() {
         <table className="w-full text-sm">
           <thead className="border-b bg-gray-50">
             <tr>
-              <th className="text-left px-4 py-3 font-medium">Organization</th>
-              <th className="text-left px-4 py-3 font-medium">Partner</th>
-              <th className="text-left px-4 py-3 font-medium">Plan</th>
-              <th className="text-left px-4 py-3 font-medium">Monthly Price</th>
-              <th className="text-left px-4 py-3 font-medium">Status</th>
-              <th className="text-left px-4 py-3 font-medium">Started</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.conversions.organization")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.conversions.partner")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.conversions.plan")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.conversions.monthlyPrice")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.conversions.status")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.conversions.started")}</th>
             </tr>
           </thead>
           <tbody>
@@ -118,24 +120,24 @@ export default function AdminConversionsPage() {
       {showDialog && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white rounded-xl p-6 w-full max-w-md mx-4">
-            <h2 className="text-lg font-semibold mb-4">Add Manual Conversion</h2>
+            <h2 className="text-lg font-semibold mb-4">{t("admin.conversions.dialogTitle")}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Partner</label>
+                <label className="block text-sm font-medium mb-1">{t("admin.conversions.partnerField")}</label>
                 <select
                   value={form.partner_id}
                   onChange={(e) => setForm({ ...form, partner_id: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2 text-sm"
                   required
                 >
-                  <option value="">Select partner...</option>
+                  <option value="">{t("admin.conversions.selectPartner")}</option>
                   {partners.map((p) => (
                     <option key={p.id} value={p.id}>{p.full_name}</option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Organization Name</label>
+                <label className="block text-sm font-medium mb-1">{t("admin.conversions.orgName")}</label>
                 <input
                   type="text"
                   value={form.organization_name}
@@ -145,7 +147,7 @@ export default function AdminConversionsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Organization ID (optional)</label>
+                <label className="block text-sm font-medium mb-1">{t("admin.conversions.orgId")}</label>
                 <input
                   type="text"
                   value={form.organization_id}
@@ -154,18 +156,18 @@ export default function AdminConversionsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Plan Type</label>
+                <label className="block text-sm font-medium mb-1">{t("admin.conversions.planType")}</label>
                 <input
                   type="text"
                   value={form.plan_type}
                   onChange={(e) => setForm({ ...form, plan_type: e.target.value })}
                   className="w-full border rounded-lg px-3 py-2 text-sm"
-                  placeholder="e.g. pro, starter"
+                  placeholder={t("admin.conversions.planPlaceholder")}
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Monthly Price ($)</label>
+                <label className="block text-sm font-medium mb-1">{t("admin.conversions.monthlyPriceField")}</label>
                 <input
                   type="number"
                   step="0.01"
@@ -181,13 +183,13 @@ export default function AdminConversionsPage() {
                   onClick={() => setShowDialog(false)}
                   className="flex-1 px-4 py-2 border rounded-lg text-sm font-medium hover:bg-gray-50"
                 >
-                  Cancel
+                  {t("admin.conversions.cancel")}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary/90"
                 >
-                  Add
+                  {t("admin.conversions.add")}
                 </button>
               </div>
             </form>

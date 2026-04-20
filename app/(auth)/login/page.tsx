@@ -7,8 +7,10 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 export default function LoginPage() {
+  const { t } = useTranslation()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -29,6 +31,9 @@ export default function LoginPage() {
       return
     }
 
+    // Set 72-hour session cookie
+    document.cookie = `session_started_at=${Date.now()}; path=/; max-age=${72 * 60 * 60}; SameSite=Lax`
+
     router.push("/")
     router.refresh()
   }
@@ -38,8 +43,8 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 text-2xl font-bold text-primary font-heading">Stoaix</div>
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your partner account</CardDescription>
+          <CardTitle className="text-xl">{t("auth.login.title")}</CardTitle>
+          <CardDescription>{t("auth.login.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -49,7 +54,7 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="email">Email</label>
+              <label className="text-sm font-medium" htmlFor="email">{t("auth.login.email")}</label>
               <Input
                 id="email"
                 type="email"
@@ -60,7 +65,12 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="password">Password</label>
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium" htmlFor="password">{t("auth.login.password")}</label>
+                <Link href="/forgot-password" className="text-xs text-primary hover:underline">
+                  {t("auth.login.forgotPassword")}
+                </Link>
+              </div>
               <Input
                 id="password"
                 type="password"
@@ -71,13 +81,13 @@ export default function LoginPage() {
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+              {loading ? t("auth.login.loading") : t("auth.login.submit")}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            {t("auth.login.noAccount")}{" "}
             <Link href="/register" className="text-primary hover:underline">
-              Register
+              {t("auth.login.register")}
             </Link>
           </p>
         </CardContent>

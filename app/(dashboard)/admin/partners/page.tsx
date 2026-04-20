@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { formatCurrency } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 import type { Partner } from "@/lib/types"
 
 export default function AdminPartnersPage() {
+  const { t } = useTranslation()
   const [partners, setPartners] = useState<Partner[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -31,23 +33,23 @@ export default function AdminPartnersPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><p className="text-muted-foreground">Loading...</p></div>
+    return <div className="flex items-center justify-center h-64"><p className="text-muted-foreground">{t("common.loading")}</p></div>
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Partner Management</h1>
+      <h1 className="text-2xl font-bold">{t("admin.partners.title")}</h1>
 
       <div className="bg-white rounded-xl border overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="border-b bg-gray-50">
             <tr>
-              <th className="text-left px-4 py-3 font-medium">Name</th>
-              <th className="text-left px-4 py-3 font-medium">Email</th>
-              <th className="text-left px-4 py-3 font-medium">Tier</th>
-              <th className="text-left px-4 py-3 font-medium">Active Clients</th>
-              <th className="text-left px-4 py-3 font-medium">Total Earnings</th>
-              <th className="text-left px-4 py-3 font-medium">Status</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.partners.name")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.partners.email")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.partners.tier")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.partners.activeClients")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.partners.totalEarnings")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.partners.status")}</th>
             </tr>
           </thead>
           <tbody>

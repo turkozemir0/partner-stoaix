@@ -7,15 +7,13 @@ import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { useTranslation } from "@/lib/i18n/useTranslation"
 
-export default function RegisterPage() {
+export default function ForgotPasswordPage() {
   const { t } = useTranslation()
-  const [step, setStep] = useState<1 | 2 | 3>(1)
-  const [fullName, setFullName] = useState("")
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [phone, setPhone] = useState("")
-  const [companyName, setCompanyName] = useState("")
   const [otp, setOtp] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [cooldown, setCooldown] = useState(0)
@@ -34,7 +32,7 @@ export default function RegisterPage() {
     const res = await fetch("/api/auth/send-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, type: "register" }),
+      body: JSON.stringify({ email, type: "reset" }),
     })
 
     const data = await res.json()
@@ -49,40 +47,53 @@ export default function RegisterPage() {
     setLoading(false)
   }
 
-  async function handleVerifyAndRegister(e: React.FormEvent) {
+  async function handleVerifyOtp(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true)
     setError("")
 
-    // Verify OTP
-    const verifyRes = await fetch("/api/auth/verify-otp", {
+    const res = await fetch("/api/auth/verify-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, code: otp, type: "register" }),
+      body: JSON.stringify({ email, code: otp, type: "reset" }),
     })
 
-    if (!verifyRes.ok) {
-      const data = await verifyRes.json()
+    if (!res.ok) {
+      const data = await res.json()
       setError(data.error)
       setLoading(false)
       return
     }
 
-    // Register
-    const registerRes = await fetch("/api/auth/register", {
+    setStep(3)
+    setLoading(false)
+  }
+
+  async function handleResetPassword(e: React.FormEvent) {
+    e.preventDefault()
+    setError("")
+
+    if (newPassword !== confirmPassword) {
+      setError(t("auth.forgotPassword.passwordMismatch"))
+      return
+    }
+
+    setLoading(true)
+
+    const res = await fetch("/api/auth/reset-password", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, fullName, phone, companyName }),
+      body: JSON.stringify({ email, newPassword }),
     })
 
-    const registerData = await registerRes.json()
-    if (!registerRes.ok) {
-      setError(registerData.error)
+    const data = await res.json()
+    if (!res.ok) {
+      setError(data.error)
       setLoading(false)
       return
     }
 
-    setStep(3)
+    setStep(4)
     setLoading(false)
   }
 
@@ -93,7 +104,7 @@ export default function RegisterPage() {
     const res = await fetch("/api/auth/send-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, type: "register" }),
+      body: JSON.stringify({ email, type: "reset" }),
     })
 
     if (res.ok) {
@@ -104,19 +115,66 @@ export default function RegisterPage() {
     }
   }
 
-  // Step 3: Success
+  // Step 4: Success
+  if (step === 4) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle className="text-xl">{t("auth.forgotPassword.successTitle")}</CardTitle>
+            <CardDescription>{t("auth.forgotPassword.successMessage")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/login">
+              <Button className="w-full">{t("auth.forgotPassword.backToLogin")}</Button>
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Step 3: New password
   if (step === 3) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
-            <CardTitle className="text-xl">{t("auth.register.successTitle")}</CardTitle>
-            <CardDescription>{t("auth.register.successMessage")}</CardDescription>
+            <div className="mx-auto mb-4 text-2xl font-bold text-primary font-heading">Stoaix</div>
+            <CardTitle className="text-xl">{t("auth.forgotPassword.step3Title")}</CardTitle>
+            <CardDescription>{t("auth.forgotPassword.step3Subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Link href="/login">
-              <Button variant="outline" className="w-full">{t("auth.register.backToLogin")}</Button>
-            </Link>
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              {error && (
+                <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">{error}</div>
+              )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("auth.forgotPassword.newPassword")}</label>
+                <Input
+                  type="password"
+                  placeholder="Min. 8 characters"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  minLength={8}
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">{t("auth.forgotPassword.confirmPassword")}</label>
+                <Input
+                  type="password"
+                  placeholder="Min. 8 characters"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  minLength={8}
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? t("auth.forgotPassword.resetting") : t("auth.forgotPassword.resetPassword")}
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
@@ -130,18 +188,18 @@ export default function RegisterPage() {
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
             <div className="mx-auto mb-4 text-2xl font-bold text-primary font-heading">Stoaix</div>
-            <CardTitle className="text-xl">{t("auth.register.step2Title")}</CardTitle>
-            <CardDescription>{t("auth.register.step2Subtitle")}</CardDescription>
+            <CardTitle className="text-xl">{t("auth.forgotPassword.step2Title")}</CardTitle>
+            <CardDescription>{t("auth.forgotPassword.step2Subtitle")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleVerifyAndRegister} className="space-y-4">
+            <form onSubmit={handleVerifyOtp} className="space-y-4">
               {error && (
                 <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">{error}</div>
               )}
               <div className="space-y-2">
                 <Input
                   type="text"
-                  placeholder={t("auth.register.otpPlaceholder")}
+                  placeholder={t("auth.forgotPassword.otpPlaceholder")}
                   value={otp}
                   onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                   className="text-center text-2xl tracking-[0.5em] font-mono"
@@ -150,7 +208,7 @@ export default function RegisterPage() {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={loading || otp.length !== 6}>
-                {loading ? t("auth.register.verifying") : t("auth.register.verify")}
+                {loading ? t("auth.forgotPassword.verifying") : t("auth.forgotPassword.verify")}
               </Button>
               <div className="text-center">
                 <button
@@ -160,8 +218,8 @@ export default function RegisterPage() {
                   className="text-sm text-primary hover:underline disabled:text-muted-foreground disabled:no-underline"
                 >
                   {cooldown > 0
-                    ? t("auth.register.resendIn", { seconds: cooldown })
-                    : t("auth.register.resendCode")}
+                    ? t("auth.forgotPassword.resendIn", { seconds: cooldown })
+                    : t("auth.forgotPassword.resendCode")}
                 </button>
               </div>
             </form>
@@ -171,14 +229,14 @@ export default function RegisterPage() {
     )
   }
 
-  // Step 1: Form
+  // Step 1: Email input
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="mx-auto mb-4 text-2xl font-bold text-primary font-heading">Stoaix</div>
-          <CardTitle className="text-xl">{t("auth.register.title")}</CardTitle>
-          <CardDescription>{t("auth.register.subtitle")}</CardDescription>
+          <CardTitle className="text-xl">{t("auth.forgotPassword.title")}</CardTitle>
+          <CardDescription>{t("auth.forgotPassword.subtitle")}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSendOtp} className="space-y-4">
@@ -186,17 +244,7 @@ export default function RegisterPage() {
               <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">{error}</div>
             )}
             <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="fullName">{t("auth.register.fullName")}</label>
-              <Input
-                id="fullName"
-                placeholder="John Doe"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="email">{t("auth.register.email")}</label>
+              <label className="text-sm font-medium" htmlFor="email">{t("auth.forgotPassword.email")}</label>
               <Input
                 id="email"
                 type="email"
@@ -206,45 +254,13 @@ export default function RegisterPage() {
                 required
               />
             </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="password">{t("auth.register.password")}</label>
-              <Input
-                id="password"
-                type="password"
-                placeholder={t("auth.register.passwordPlaceholder")}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                minLength={8}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="phone">{t("auth.register.phone")}</label>
-              <Input
-                id="phone"
-                type="tel"
-                placeholder="+1 (555) 000-0000"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium" htmlFor="company">{t("auth.register.company")}</label>
-              <Input
-                id="company"
-                placeholder="Your company name"
-                value={companyName}
-                onChange={(e) => setCompanyName(e.target.value)}
-              />
-            </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? t("auth.register.loading") : t("auth.register.submit")}
+              {loading ? t("auth.forgotPassword.sending") : t("auth.forgotPassword.sendCode")}
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            {t("auth.register.hasAccount")}{" "}
             <Link href="/login" className="text-primary hover:underline">
-              {t("auth.register.login")}
+              {t("auth.forgotPassword.backToLogin")}
             </Link>
           </p>
         </CardContent>

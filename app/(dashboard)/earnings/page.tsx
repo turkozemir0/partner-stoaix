@@ -8,9 +8,11 @@ import { Badge } from "@/components/ui/badge"
 import { KPICard } from "@/components/dashboard/KPICard"
 import { formatCurrency, formatDate } from "@/lib/utils"
 import { DollarSign, Clock, CheckCircle } from "lucide-react"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 import type { Partner, MonthlyCommission } from "@/lib/types"
 
 export default function EarningsPage() {
+  const { t } = useTranslation()
   const [partner, setPartner] = useState<Partner | null>(null)
   const [commissions, setCommissions] = useState<MonthlyCommission[]>([])
   const supabase = createClient()
@@ -47,58 +49,56 @@ export default function EarningsPage() {
   }
 
   if (!partner) {
-    return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading...</div>
+    return <div className="flex items-center justify-center h-64 text-muted-foreground">{t("common.loading")}</div>
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold font-heading">Earnings</h1>
-        <p className="text-muted-foreground text-sm">Your commission history and breakdown</p>
+        <h1 className="text-2xl font-bold font-heading">{t("earnings.title")}</h1>
+        <p className="text-muted-foreground text-sm">{t("earnings.subtitle")}</p>
       </div>
 
-      {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <KPICard
-          title="Total Earned"
+          title={t("earnings.totalEarned")}
           value={formatCurrency(partner.total_earnings)}
           icon={DollarSign}
         />
         <KPICard
-          title="Pending Balance"
+          title={t("earnings.pendingBalance")}
           value={formatCurrency(partner.pending_balance)}
           icon={Clock}
         />
         <KPICard
-          title="Paid Out"
+          title={t("earnings.paidOut")}
           value={formatCurrency(partner.paid_balance)}
           icon={CheckCircle}
         />
       </div>
 
-      {/* Commission History */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Commission History</CardTitle>
+          <CardTitle className="text-base">{t("earnings.commissionHistory")}</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Period</TableHead>
-                <TableHead>Tier</TableHead>
-                <TableHead>Rate</TableHead>
-                <TableHead>Active Clients</TableHead>
-                <TableHead>Revenue</TableHead>
-                <TableHead>Commission</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{t("earnings.period")}</TableHead>
+                <TableHead>{t("earnings.tier")}</TableHead>
+                <TableHead>{t("earnings.rate")}</TableHead>
+                <TableHead>{t("earnings.activeClients")}</TableHead>
+                <TableHead>{t("earnings.revenue")}</TableHead>
+                <TableHead>{t("earnings.commission")}</TableHead>
+                <TableHead>{t("earnings.status")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {commissions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    No commission history yet.
+                    {t("earnings.noCommissions")}
                   </TableCell>
                 </TableRow>
               ) : (

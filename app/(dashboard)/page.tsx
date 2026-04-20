@@ -8,9 +8,11 @@ import { RecentSales } from "@/components/dashboard/RecentSales"
 import { TierCard } from "@/components/dashboard/TierCard"
 import { DollarSign, Users, MousePointerClick, TrendingUp } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 import type { Partner, Conversion } from "@/lib/types"
 
 export default function DashboardPage() {
+  const { t } = useTranslation()
   const [partner, setPartner] = useState<Partner | null>(null)
   const [conversions, setConversions] = useState<Conversion[]>([])
   const [chartData, setChartData] = useState<{ month: string; earnings: number }[]>([])
@@ -68,7 +70,7 @@ export default function DashboardPage() {
   if (!partner) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-pulse text-muted-foreground">Loading...</div>
+        <div className="animate-pulse text-muted-foreground">{t("common.loading")}</div>
       </div>
     )
   }
@@ -76,30 +78,30 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold font-heading">Dashboard</h1>
-        <p className="text-muted-foreground text-sm">Welcome back, {partner.full_name}</p>
+        <h1 className="text-2xl font-bold font-heading">{t("dashboard.title")}</h1>
+        <p className="text-muted-foreground text-sm">{t("dashboard.welcome", { name: partner.full_name })}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
-          title="Total Earnings"
+          title={t("dashboard.totalEarnings")}
           value={formatCurrency(partner.total_earnings)}
           icon={DollarSign}
           trend={{ value: 12, positive: true }}
         />
         <KPICard
-          title="Active Clients"
+          title={t("dashboard.activeClients")}
           value={String(partner.active_clients)}
           icon={Users}
-          description={`${partner.tier} tier`}
+          description={`${partner.tier} ${t("dashboard.tierSuffix")}`}
         />
         <KPICard
-          title="Total Clicks"
+          title={t("dashboard.totalClicks")}
           value={totalClicks.toLocaleString()}
           icon={MousePointerClick}
         />
         <KPICard
-          title="Conversion Rate"
+          title={t("dashboard.conversionRate")}
           value={`${conversionRate.toFixed(1)}%`}
           icon={TrendingUp}
         />

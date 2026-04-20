@@ -1,11 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Bell, Menu, X } from "lucide-react"
+import { Bell, Menu } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 import { MobileNav } from "./MobileNav"
+import { LanguageSwitcher } from "./LanguageSwitcher"
 
 interface HeaderProps {
   partnerName?: string
@@ -40,6 +40,7 @@ export function Header({ partnerName }: HeaderProps) {
         </Button>
         <div className="flex-1" />
         <div className="flex items-center gap-4">
+          <LanguageSwitcher />
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
             {unreadCount > 0 && (

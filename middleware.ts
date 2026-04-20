@@ -1,6 +1,8 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
+const SESSION_MAX_AGE_MS = 72 * 60 * 60 * 1000 // 72 hours
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: { headers: request.headers },
@@ -34,8 +36,31 @@ export async function middleware(request: NextRequest) {
 
   const { data: { session } } = await supabase.auth.getSession()
 
+  // Check 72-hour session expiry
+  if (session) {
+    const sessionStarted = request.cookies.get("session_started_at")?.value
+    if (sessionStarted) {
+      const elapsed = Date.now() - parseInt(sessionStarted, 10)
+      if (elapsed > SESSION_MAX_AGE_MS) {
+        // Session expired — clear cookies and redirect to login
+        const redirectUrl = new URL("/login", request.url)
+        const redirectResponse = NextResponse.redirect(redirectUrl)
+        redirectResponse.cookies.set("session_started_at", "", { path: "/", maxAge: 0 })
+        // Clear supabase auth cookies
+        request.cookies.getAll().forEach((cookie) => {
+          if (cookie.name.includes("supabase") || cookie.name.includes("sb-")) {
+            redirectResponse.cookies.set(cookie.name, "", { path: "/", maxAge: 0 })
+          }
+        })
+        return redirectResponse
+      }
+    }
+  }
+
   // Redirect unauthenticated users to login (except auth pages and referral redirects)
-  const isAuthPage = request.nextUrl.pathname.startsWith("/login") || request.nextUrl.pathname.startsWith("/register")
+  const isAuthPage = request.nextUrl.pathname.startsWith("/login") ||
+    request.nextUrl.pathname.startsWith("/register") ||
+    request.nextUrl.pathname.startsWith("/forgot-password")
   const isReferralRedirect = request.nextUrl.pathname.startsWith("/r/")
   const isApiRoute = request.nextUrl.pathname.startsWith("/api/")
 

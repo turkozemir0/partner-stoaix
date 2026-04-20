@@ -3,16 +3,18 @@
 import { useEffect, useState } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Plus, Copy, ExternalLink, Trash2 } from "lucide-react"
+import { Plus, Copy, Trash2 } from "lucide-react"
 import { generateReferralCode } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 import type { ReferralLink } from "@/lib/types"
 
 export default function LinksPage() {
+  const { t } = useTranslation()
   const [links, setLinks] = useState<ReferralLink[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [label, setLabel] = useState("")
@@ -73,7 +75,7 @@ export default function LinksPage() {
   }
 
   async function deleteLink(id: string) {
-    if (!confirm("Are you sure you want to delete this link?")) return
+    if (!confirm(t("links.deleteConfirm"))) return
     await supabase.from("referral_links").delete().eq("id", id)
     fetchLinks()
   }
@@ -89,12 +91,12 @@ export default function LinksPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-heading">Referral Links</h1>
-          <p className="text-muted-foreground text-sm">Create and manage your referral links</p>
+          <h1 className="text-2xl font-bold font-heading">{t("links.title")}</h1>
+          <p className="text-muted-foreground text-sm">{t("links.subtitle")}</p>
         </div>
         <Button onClick={() => setDialogOpen(true)}>
           <Plus className="h-4 w-4 mr-2" />
-          Create Link
+          {t("links.createLink")}
         </Button>
       </div>
 
@@ -103,19 +105,19 @@ export default function LinksPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Label</TableHead>
-                <TableHead>Code</TableHead>
-                <TableHead>Clicks</TableHead>
-                <TableHead>Conversions</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
+                <TableHead>{t("links.label")}</TableHead>
+                <TableHead>{t("links.code")}</TableHead>
+                <TableHead>{t("links.clicks")}</TableHead>
+                <TableHead>{t("links.conversions")}</TableHead>
+                <TableHead>{t("links.status")}</TableHead>
+                <TableHead className="text-right">{t("links.actions")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {links.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    No links yet. Create your first referral link to get started.
+                    {t("links.noLinks")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -133,7 +135,7 @@ export default function LinksPage() {
                         className="cursor-pointer"
                         onClick={() => toggleLink(link.id, link.is_active)}
                       >
-                        {link.is_active ? "Active" : "Inactive"}
+                        {link.is_active ? t("links.active") : t("links.inactive")}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -164,24 +166,23 @@ export default function LinksPage() {
         </CardContent>
       </Card>
 
-      {/* Create Link Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create Referral Link</DialogTitle>
+            <DialogTitle>{t("links.dialogTitle")}</DialogTitle>
           </DialogHeader>
           <form onSubmit={createLink} className="space-y-4 mt-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Label</label>
+              <label className="text-sm font-medium">{t("links.labelField")}</label>
               <Input
-                placeholder="e.g. LinkedIn Post, Email Campaign"
+                placeholder={t("links.labelPlaceholder")}
                 value={label}
                 onChange={(e) => setLabel(e.target.value)}
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Destination URL</label>
+              <label className="text-sm font-medium">{t("links.destinationField")}</label>
               <Input
                 placeholder="https://stoaix.com"
                 value={destination}
@@ -191,10 +192,10 @@ export default function LinksPage() {
             </div>
             <div className="flex gap-2 justify-end">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
+                {t("links.cancel")}
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? "Creating..." : "Create"}
+                {loading ? t("links.creating") : t("links.create")}
               </Button>
             </div>
           </form>

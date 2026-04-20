@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { formatCurrency, formatDate } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 interface PayoutRow {
   id: string
@@ -15,6 +16,7 @@ interface PayoutRow {
 }
 
 export default function AdminPayoutsPage() {
+  const { t } = useTranslation()
   const [payouts, setPayouts] = useState<PayoutRow[]>([])
   const [loading, setLoading] = useState(true)
   const [processing, setProcessing] = useState<string | null>(null)
@@ -36,7 +38,7 @@ export default function AdminPayoutsPage() {
     setProcessing(payoutId)
     let reference = ""
     if (action === "approve") {
-      reference = prompt("Enter payment reference (optional):") || ""
+      reference = prompt(t("admin.payouts.referencePrompt")) || ""
     }
     await fetch("/api/admin/payouts", {
       method: "PATCH",
@@ -48,23 +50,23 @@ export default function AdminPayoutsPage() {
   }
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64"><p className="text-muted-foreground">Loading...</p></div>
+    return <div className="flex items-center justify-center h-64"><p className="text-muted-foreground">{t("common.loading")}</p></div>
   }
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Payout Management</h1>
+      <h1 className="text-2xl font-bold">{t("admin.payouts.title")}</h1>
 
       <div className="bg-white rounded-xl border overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="border-b bg-gray-50">
             <tr>
-              <th className="text-left px-4 py-3 font-medium">Partner</th>
-              <th className="text-left px-4 py-3 font-medium">Amount</th>
-              <th className="text-left px-4 py-3 font-medium">Method</th>
-              <th className="text-left px-4 py-3 font-medium">Status</th>
-              <th className="text-left px-4 py-3 font-medium">Requested</th>
-              <th className="text-left px-4 py-3 font-medium">Actions</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.payouts.partner")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.payouts.amount")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.payouts.method")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.payouts.status")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.payouts.requested")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.payouts.actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -95,14 +97,14 @@ export default function AdminPayoutsPage() {
                         disabled={processing === p.id}
                         className="px-3 py-1 bg-green-600 text-white text-xs font-medium rounded hover:bg-green-700 disabled:opacity-50"
                       >
-                        Approve
+                        {t("admin.payouts.approve")}
                       </button>
                       <button
                         onClick={() => handleAction(p.id, "reject")}
                         disabled={processing === p.id}
                         className="px-3 py-1 bg-red-600 text-white text-xs font-medium rounded hover:bg-red-700 disabled:opacity-50"
                       >
-                        Reject
+                        {t("admin.payouts.reject")}
                       </button>
                     </div>
                   )}

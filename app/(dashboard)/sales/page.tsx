@@ -6,9 +6,11 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { formatCurrency, formatDate } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 import type { Conversion } from "@/lib/types"
 
 export default function SalesPage() {
+  const { t } = useTranslation()
   const [conversions, setConversions] = useState<Conversion[]>([])
   const [filter, setFilter] = useState<"all" | "active" | "churned" | "cancelled">("all")
   const supabase = createClient()
@@ -50,14 +52,20 @@ export default function SalesPage() {
     }
   }
 
+  const filterLabels: Record<string, string> = {
+    all: t("sales.all"),
+    active: t("sales.active"),
+    churned: t("sales.churned"),
+    cancelled: t("sales.cancelled"),
+  }
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold font-heading">Sales</h1>
-        <p className="text-muted-foreground text-sm">Track your referred clients and their status</p>
+        <h1 className="text-2xl font-bold font-heading">{t("sales.title")}</h1>
+        <p className="text-muted-foreground text-sm">{t("sales.subtitle")}</p>
       </div>
 
-      {/* Filters */}
       <div className="flex gap-2">
         {(["all", "active", "churned", "cancelled"] as const).map((f) => (
           <button
@@ -69,7 +77,7 @@ export default function SalesPage() {
                 : "bg-gray-100 text-muted-foreground hover:bg-gray-200"
             }`}
           >
-            {f.charAt(0).toUpperCase() + f.slice(1)}
+            {filterLabels[f]}
           </button>
         ))}
       </div>
@@ -79,18 +87,18 @@ export default function SalesPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Organization</TableHead>
-                <TableHead>Plan</TableHead>
-                <TableHead>Monthly Price</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Started</TableHead>
+                <TableHead>{t("sales.organization")}</TableHead>
+                <TableHead>{t("sales.plan")}</TableHead>
+                <TableHead>{t("sales.monthlyPrice")}</TableHead>
+                <TableHead>{t("sales.status")}</TableHead>
+                <TableHead>{t("sales.started")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {conversions.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                    No sales yet.
+                    {t("sales.noSales")}
                   </TableCell>
                 </TableRow>
               ) : (

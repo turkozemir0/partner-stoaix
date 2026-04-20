@@ -9,11 +9,13 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { formatCurrency, formatDate } from "@/lib/utils"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 import type { Payout, Partner } from "@/lib/types"
 
 const MIN_PAYOUT = 50
 
 export default function PayoutsPage() {
+  const { t } = useTranslation()
   const [partner, setPartner] = useState<Partner | null>(null)
   const [payouts, setPayouts] = useState<Payout[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -53,13 +55,13 @@ export default function PayoutsPage() {
 
     const payoutAmount = parseFloat(amount)
     if (isNaN(payoutAmount) || payoutAmount < MIN_PAYOUT) {
-      setError(`Minimum payout amount is ${formatCurrency(MIN_PAYOUT)}`)
+      setError(t("payouts.minError", { amount: formatCurrency(MIN_PAYOUT) }))
       setLoading(false)
       return
     }
 
     if (partner && payoutAmount > partner.pending_balance) {
-      setError("Amount exceeds your pending balance")
+      setError(t("payouts.exceedsBalance"))
       setLoading(false)
       return
     }
@@ -76,7 +78,6 @@ export default function PayoutsPage() {
       return
     }
 
-    // Update pending balance
     await supabase
       .from("partners")
       .update({ pending_balance: (partner!.pending_balance - payoutAmount) })
@@ -102,11 +103,11 @@ export default function PayoutsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold font-heading">Payouts</h1>
-          <p className="text-muted-foreground text-sm">Request and track your payouts</p>
+          <h1 className="text-2xl font-bold font-heading">{t("payouts.title")}</h1>
+          <p className="text-muted-foreground text-sm">{t("payouts.subtitle")}</p>
         </div>
         <div className="text-right">
-          <p className="text-sm text-muted-foreground">Available balance</p>
+          <p className="text-sm text-muted-foreground">{t("payouts.availableBalance")}</p>
           <p className="text-xl font-bold">{formatCurrency(partner?.pending_balance || 0)}</p>
         </div>
       </div>
@@ -115,34 +116,34 @@ export default function PayoutsPage() {
         onClick={() => setDialogOpen(true)}
         disabled={!partner || partner.pending_balance < MIN_PAYOUT}
       >
-        Request Payout
+        {t("payouts.requestPayout")}
       </Button>
       {partner && partner.pending_balance < MIN_PAYOUT && (
         <p className="text-xs text-muted-foreground">
-          Minimum payout: {formatCurrency(MIN_PAYOUT)}. You need {formatCurrency(MIN_PAYOUT - partner.pending_balance)} more.
+          {t("payouts.minPayout", { amount: formatCurrency(MIN_PAYOUT), needed: formatCurrency(MIN_PAYOUT - partner.pending_balance) })}
         </p>
       )}
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Payout History</CardTitle>
+          <CardTitle className="text-base">{t("payouts.payoutHistory")}</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Amount</TableHead>
-                <TableHead>Method</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Reference</TableHead>
+                <TableHead>{t("payouts.date")}</TableHead>
+                <TableHead>{t("payouts.amount")}</TableHead>
+                <TableHead>{t("payouts.method")}</TableHead>
+                <TableHead>{t("payouts.status")}</TableHead>
+                <TableHead>{t("payouts.reference")}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {payouts.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={5} className="text-center py-8 text-muted-foreground">
-                    No payouts yet.
+                    {t("payouts.noPayouts")}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -163,13 +164,12 @@ export default function PayoutsPage() {
         </CardContent>
       </Card>
 
-      {/* Request Payout Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Request Payout</DialogTitle>
+            <DialogTitle>{t("payouts.dialogTitle")}</DialogTitle>
             <DialogDescription>
-              Available balance: {formatCurrency(partner?.pending_balance || 0)}
+              {t("payouts.dialogDescription", { amount: formatCurrency(partner?.pending_balance || 0) })}
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={requestPayout} className="space-y-4 mt-4">
@@ -177,19 +177,19 @@ export default function PayoutsPage() {
               <div className="p-3 text-sm text-red-600 bg-red-50 rounded-lg">{error}</div>
             )}
             <div className="space-y-2">
-              <label className="text-sm font-medium">Amount (USD)</label>
+              <label className="text-sm font-medium">{t("payouts.amountField")}</label>
               <Input
                 type="number"
                 min={MIN_PAYOUT}
                 step="0.01"
-                placeholder={`Min. $${MIN_PAYOUT}`}
+                placeholder={t("payouts.amountPlaceholder", { min: MIN_PAYOUT })}
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
                 required
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Method</label>
+              <label className="text-sm font-medium">{t("payouts.paymentMethod")}</label>
               <div className="flex gap-2">
                 <button
                   type="button"
@@ -198,7 +198,7 @@ export default function PayoutsPage() {
                     method === "bank_transfer" ? "border-primary bg-primary/5" : "border-gray-200"
                   }`}
                 >
-                  Bank Transfer
+                  {t("payouts.bankTransfer")}
                 </button>
                 <button
                   type="button"
@@ -207,16 +207,16 @@ export default function PayoutsPage() {
                     method === "paypal" ? "border-primary bg-primary/5" : "border-gray-200"
                   }`}
                 >
-                  PayPal
+                  {t("payouts.paypal")}
                 </button>
               </div>
             </div>
             <div className="flex gap-2 justify-end">
               <Button type="button" variant="outline" onClick={() => setDialogOpen(false)}>
-                Cancel
+                {t("payouts.cancel")}
               </Button>
               <Button type="submit" disabled={loading}>
-                {loading ? "Submitting..." : "Request Payout"}
+                {loading ? t("payouts.submitting") : t("payouts.submit")}
               </Button>
             </div>
           </form>
