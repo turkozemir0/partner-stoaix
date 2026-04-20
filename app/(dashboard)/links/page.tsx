@@ -16,7 +16,7 @@ export default function LinksPage() {
   const [links, setLinks] = useState<ReferralLink[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
   const [label, setLabel] = useState("")
-  const [destination, setDestination] = useState("https://stoaix.com")
+  const [destination, setDestination] = useState("https://stoaix.com/signup")
   const [loading, setLoading] = useState(false)
   const [partnerId, setPartnerId] = useState("")
   const [copied, setCopied] = useState<string | null>(null)
