@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [partnerName, setPartnerName] = useState("")
+  const [isAdmin, setIsAdmin] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
@@ -15,10 +16,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       if (user) {
         const { data } = await supabase
           .from("partners")
-          .select("full_name")
+          .select("full_name, is_admin")
           .eq("user_id", user.id)
           .single()
-        if (data) setPartnerName(data.full_name)
+        if (data) {
+          setPartnerName(data.full_name)
+          setIsAdmin(data.is_admin || false)
+        }
       }
     }
     fetchPartner()
@@ -26,7 +30,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Sidebar />
+      <Sidebar isAdmin={isAdmin} />
       <div className="md:pl-64">
         <Header partnerName={partnerName} />
         <main className="p-4 md:p-6 lg:p-8">
