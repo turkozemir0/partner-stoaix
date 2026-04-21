@@ -81,7 +81,8 @@
     "adminOverview": "Overview",
     "adminPartners": "Partners",
     "adminConversions": "Conversions",
-    "adminPayouts": "Payouts"
+    "adminPayouts": "Payouts",
+    "adminDemoRequests": "Demo Requests"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -241,6 +242,28 @@
       "cancel": "Cancel",
       "add": "Add"
     },
+    "demoRequests": {
+      "title": "Demo Requests",
+      "subtitle": "Manage partner demo account requests",
+      "partner": "Partner",
+      "email": "Email",
+      "company": "Company",
+      "date": "Date",
+      "status": "Status",
+      "actions": "Actions",
+      "approve": "Approve",
+      "reject": "Reject",
+      "noRequests": "No demo requests yet.",
+      "rejectReason": "Rejection Reason",
+      "notePlaceholder": "Optional note for the partner...",
+      "cancel": "Cancel",
+      "confirmReject": "Reject Request",
+      "statusLabels": {
+        "pending": "Pending",
+        "approved": "Approved",
+        "rejected": "Rejected"
+      }
+    },
     "payouts": {
       "title": "Payout Management",
       "partner": "Partner",
@@ -270,6 +293,16 @@
   "recentSales": {
     "title": "Recent Sales",
     "noConversions": "No conversions yet. Share your referral links to get started!"
+  },
+  "demoRequest": {
+    "title": "Demo Account",
+    "description": "Request a demo account to showcase Stoaix to your potential clients.",
+    "requestButton": "Request Demo Account",
+    "pending": "Your request is being reviewed",
+    "pendingDescription": "We'll notify you once your demo account is ready.",
+    "approved": "Your demo account is approved",
+    "approvedDescription": "Your demo account has been set up. Check your email for access details.",
+    "rejectedNote": "Previous request was rejected: {note}"
   },
   "common": {
     "loading": "Loading...",

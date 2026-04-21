@@ -4,6 +4,7 @@ export type ConversionStatus = "active" | "churned" | "cancelled"
 export type CommissionStatus = "calculated" | "confirmed" | "paid"
 export type PayoutMethod = "bank_transfer" | "paypal"
 export type PayoutStatus = "pending" | "processing" | "completed" | "failed"
+export type DemoRequestStatus = "pending" | "approved" | "rejected"
 
 export interface Partner {
   id: string
@@ -104,6 +105,15 @@ export interface Payment {
   period_end: string
   paid_at: string
   created_at: string
+}
+
+export interface DemoRequest {
+  id: string
+  partner_id: string
+  status: DemoRequestStatus
+  admin_note: string | null
+  created_at: string
+  updated_at: string
 }
 
 export interface DashboardStats {

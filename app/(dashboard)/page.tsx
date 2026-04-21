@@ -6,10 +6,10 @@ import { KPICard } from "@/components/dashboard/KPICard"
 import { EarningsChart } from "@/components/dashboard/EarningsChart"
 import { RecentSales } from "@/components/dashboard/RecentSales"
 import { TierCard } from "@/components/dashboard/TierCard"
-import { DollarSign, Users, MousePointerClick, TrendingUp } from "lucide-react"
+import { DollarSign, Users, MousePointerClick, TrendingUp, Monitor, Clock, CheckCircle, XCircle } from "lucide-react"
 import { formatCurrency } from "@/lib/utils"
 import { useTranslation } from "@/lib/i18n/useTranslation"
-import type { Partner, Conversion } from "@/lib/types"
+import type { Partner, Conversion, DemoRequest } from "@/lib/types"
 
 export default function DashboardPage() {
   const { t } = useTranslation()
@@ -18,6 +18,8 @@ export default function DashboardPage() {
   const [chartData, setChartData] = useState<{ month: string; earnings: number }[]>([])
   const [totalClicks, setTotalClicks] = useState(0)
   const [conversionRate, setConversionRate] = useState(0)
+  const [demoRequest, setDemoRequest] = useState<DemoRequest | null>(null)
+  const [demoLoading, setDemoLoading] = useState(false)
   const supabase = createClient()
 
   useEffect(() => {
@@ -62,6 +64,15 @@ export default function DashboardPage() {
         const convs = links.reduce((sum: number, l: any) => sum + l.conversion_count, 0)
         setTotalClicks(clicks)
         setConversionRate(clicks > 0 ? (convs / clicks) * 100 : 0)
+      }
+
+      // Fetch demo request status
+      const demoRes = await fetch("/api/demo-requests")
+      if (demoRes.ok) {
+        const demoData = await demoRes.json()
+        if (demoData.requests && demoData.requests.length > 0) {
+          setDemoRequest(demoData.requests[0])
+        }
       }
     }
     fetchData()
@@ -115,6 +126,57 @@ export default function DashboardPage() {
       </div>
 
       <RecentSales conversions={conversions} />
+
+      {/* Demo Account Request Card */}
+      <div className="bg-white rounded-xl border p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <Monitor className="h-5 w-5 text-primary" />
+          <h2 className="text-lg font-semibold font-heading">{t("demoRequest.title")}</h2>
+        </div>
+
+        {!demoRequest || demoRequest.status === "rejected" ? (
+          <div>
+            <p className="text-sm text-muted-foreground mb-4">{t("demoRequest.description")}</p>
+            {demoRequest?.status === "rejected" && demoRequest.admin_note && (
+              <div className="flex items-start gap-2 mb-4 p-3 bg-red-50 rounded-lg">
+                <XCircle className="h-4 w-4 text-red-500 mt-0.5 shrink-0" />
+                <p className="text-sm text-red-700">{t("demoRequest.rejectedNote", { note: demoRequest.admin_note })}</p>
+              </div>
+            )}
+            <button
+              onClick={async () => {
+                setDemoLoading(true)
+                const res = await fetch("/api/demo-requests", { method: "POST" })
+                if (res.ok) {
+                  const data = await res.json()
+                  setDemoRequest(data.request)
+                }
+                setDemoLoading(false)
+              }}
+              disabled={demoLoading}
+              className="px-4 py-2 text-sm font-medium text-white bg-primary rounded-lg hover:bg-primary/90 disabled:opacity-50"
+            >
+              {demoLoading ? t("common.loading") : t("demoRequest.requestButton")}
+            </button>
+          </div>
+        ) : demoRequest.status === "pending" ? (
+          <div className="flex items-center gap-3 p-4 bg-yellow-50 rounded-lg">
+            <Clock className="h-5 w-5 text-yellow-600" />
+            <div>
+              <p className="text-sm font-medium text-yellow-800">{t("demoRequest.pending")}</p>
+              <p className="text-xs text-yellow-600">{t("demoRequest.pendingDescription")}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 p-4 bg-green-50 rounded-lg">
+            <CheckCircle className="h-5 w-5 text-green-600" />
+            <div>
+              <p className="text-sm font-medium text-green-800">{t("demoRequest.approved")}</p>
+              <p className="text-xs text-green-600">{t("demoRequest.approvedDescription")}</p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

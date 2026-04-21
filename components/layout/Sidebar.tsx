@@ -16,6 +16,7 @@ import {
   Users,
   ArrowRightLeft,
   Wallet,
+  Monitor,
 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
@@ -36,6 +37,7 @@ const adminItems = [
   { href: "/admin/partners", labelKey: "nav.adminPartners", icon: Users },
   { href: "/admin/conversions", labelKey: "nav.adminConversions", icon: ArrowRightLeft },
   { href: "/admin/payouts", labelKey: "nav.adminPayouts", icon: Wallet },
+  { href: "/admin/demo-requests", labelKey: "nav.adminDemoRequests", icon: Monitor },
 ]
 
 interface SidebarProps {

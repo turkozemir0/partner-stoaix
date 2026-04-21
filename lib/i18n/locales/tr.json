@@ -81,7 +81,8 @@
     "adminOverview": "Genel Bakış",
     "adminPartners": "Partnerler",
     "adminConversions": "Dönüşümler",
-    "adminPayouts": "Ödemeler"
+    "adminPayouts": "Ödemeler",
+    "adminDemoRequests": "Demo Talepleri"
   },
   "dashboard": {
     "title": "Panel",
@@ -241,6 +242,28 @@
       "cancel": "İptal",
       "add": "Ekle"
     },
+    "demoRequests": {
+      "title": "Demo Talepleri",
+      "subtitle": "Partner demo hesap taleplerini yönetin",
+      "partner": "Partner",
+      "email": "E-posta",
+      "company": "Şirket",
+      "date": "Tarih",
+      "status": "Durum",
+      "actions": "İşlemler",
+      "approve": "Onayla",
+      "reject": "Reddet",
+      "noRequests": "Henüz demo talebi yok.",
+      "rejectReason": "Red Gerekçesi",
+      "notePlaceholder": "Partner için isteğe bağlı not...",
+      "cancel": "İptal",
+      "confirmReject": "Talebi Reddet",
+      "statusLabels": {
+        "pending": "Beklemede",
+        "approved": "Onaylandı",
+        "rejected": "Reddedildi"
+      }
+    },
     "payouts": {
       "title": "Ödeme Yönetimi",
       "partner": "Partner",
@@ -270,6 +293,16 @@
   "recentSales": {
     "title": "Son Satışlar",
     "noConversions": "Henüz dönüşüm yok. Başlamak için referans linklerinizi paylaşın!"
+  },
+  "demoRequest": {
+    "title": "Demo Hesabı",
+    "description": "Potansiyel müşterilerinize Stoaix'i tanıtmak için demo hesabı talep edin.",
+    "requestButton": "Demo Hesabı Talep Et",
+    "pending": "Talebiniz inceleniyor",
+    "pendingDescription": "Demo hesabınız hazır olduğunda sizi bilgilendireceğiz.",
+    "approved": "Demo hesabınız onaylandı",
+    "approvedDescription": "Demo hesabınız oluşturuldu. Erişim detayları için e-postanızı kontrol edin.",
+    "rejectedNote": "Önceki talep reddedildi: {note}"
   },
   "common": {
     "loading": "Yükleniyor...",
