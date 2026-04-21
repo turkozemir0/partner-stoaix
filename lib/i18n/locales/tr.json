@@ -9,7 +9,14 @@
       "loading": "Giriş yapılıyor...",
       "noAccount": "Hesabınız yok mu?",
       "register": "Kayıt Ol",
-      "forgotPassword": "Şifremi Unuttum"
+      "forgotPassword": "Şifremi Unuttum",
+      "otpTitle": "E-posta Doğrulama",
+      "otpSubtitle": "E-postanıza gönderilen 6 haneli kodu girin",
+      "otpPlaceholder": "6 haneli kod",
+      "verify": "Doğrula",
+      "verifying": "Doğrulanıyor...",
+      "resendCode": "Kodu Tekrar Gönder",
+      "resendIn": "Tekrar gönder ({seconds}s)"
     },
     "register": {
       "title": "Partner Olun",

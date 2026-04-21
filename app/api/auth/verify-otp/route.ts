@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   try {
     const { email, code, type } = await request.json()
 
-    if (!email || !code || !type) {
+    if (!email || !code || !type || !["register", "reset", "login"].includes(type)) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 })
     }
 

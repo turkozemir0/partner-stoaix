@@ -9,7 +9,14 @@
       "loading": "Signing in...",
       "noAccount": "Don't have an account?",
       "register": "Register",
-      "forgotPassword": "Forgot password?"
+      "forgotPassword": "Forgot password?",
+      "otpTitle": "Email Verification",
+      "otpSubtitle": "Enter the 6-digit code sent to your email",
+      "otpPlaceholder": "6-digit code",
+      "verify": "Verify",
+      "verifying": "Verifying...",
+      "resendCode": "Resend Code",
+      "resendIn": "Resend in ({seconds}s)"
     },
     "register": {
       "title": "Become a Partner",

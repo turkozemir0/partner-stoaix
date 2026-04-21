@@ -10,7 +10,10 @@
       "Bash(npx create-next-app@14:*)",
       "Bash(npx:*)",
       "Bash(mkdir:*)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "WebSearch",
+      "Bash(ls:*)"
     ]
   }
 }

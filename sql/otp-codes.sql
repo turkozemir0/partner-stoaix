@@ -3,7 +3,7 @@ CREATE TABLE otp_codes (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email text NOT NULL,
   code text NOT NULL,
-  type text NOT NULL CHECK (type IN ('register', 'reset')),
+  type text NOT NULL CHECK (type IN ('register', 'reset', 'login')),
   expires_at timestamptz NOT NULL,
   used boolean DEFAULT false,
   created_at timestamptz DEFAULT now()

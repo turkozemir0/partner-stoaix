@@ -6,7 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const { email, type } = await request.json()
 
-    if (!email || !type || !["register", "reset"].includes(type)) {
+    if (!email || !type || !["register", "reset", "login"].includes(type)) {
       return NextResponse.json({ error: "Invalid request" }, { status: 400 })
     }
 
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Email already registered" }, { status: 409 })
     }
 
-    if (type === "reset" && !existingPartner) {
+    if ((type === "reset" || type === "login") && !existingPartner) {
       return NextResponse.json({ error: "Email not found" }, { status: 404 })
     }
 
@@ -70,19 +70,26 @@ export async function POST(request: NextRequest) {
 
     // Send email via Resend
     const resend = new Resend(process.env.RESEND_API_KEY)
-    const subject = type === "register"
-      ? "Stoaix Partner - E-posta Doğrulama Kodu"
-      : "Stoaix Partner - Şifre Sıfırlama Kodu"
+    const subjects: Record<string, string> = {
+      register: "Stoaix Partner - E-posta Doğrulama Kodu",
+      reset: "Stoaix Partner - Şifre Sıfırlama Kodu",
+      login: "Stoaix Partner - Giriş Doğrulama Kodu",
+    }
+    const descriptions: Record<string, string> = {
+      register: "Partner kaydınızı tamamlamak için",
+      reset: "Şifrenizi sıfırlamak için",
+      login: "Hesabınıza giriş yapmak için",
+    }
 
     await resend.emails.send({
       from: "Stoaix <noreply@stoaix.com>",
       to: email,
-      subject,
+      subject: subjects[type],
       html: `
         <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px;">
           <h2 style="color: #1a1a1a; margin-bottom: 8px;">Doğrulama Kodu</h2>
           <p style="color: #666; margin-bottom: 24px;">
-            ${type === "register" ? "Partner kaydınızı tamamlamak için" : "Şifrenizi sıfırlamak için"} aşağıdaki kodu kullanın:
+            ${descriptions[type]} aşağıdaki kodu kullanın:
           </p>
           <div style="background: #f5f5f5; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 24px;">
             <span style="font-size: 32px; font-weight: bold; letter-spacing: 4px; color: #1a1a1a;">${code}</span>
