@@ -93,6 +93,19 @@ export interface Notification {
   created_at: string
 }
 
+export interface Payment {
+  id: string
+  conversion_id: string
+  organization_id: string
+  stripe_invoice_id: string
+  amount: number
+  currency: string
+  period_start: string
+  period_end: string
+  paid_at: string
+  created_at: string
+}
+
 export interface DashboardStats {
   totalEarnings: number
   pendingBalance: number
