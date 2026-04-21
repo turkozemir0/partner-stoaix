@@ -14,21 +14,37 @@ interface LanguageContextType {
   t: (key: string, params?: Record<string, string | number>) => string
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
-
 function getNestedValue(obj: any, path: string): string {
   const value = path.split(".").reduce((acc, part) => acc?.[part], obj)
   return typeof value === "string" ? value : path
 }
 
+function fallbackT(key: string, params?: Record<string, string | number>): string {
+  let value = getNestedValue(locales.tr, key)
+  if (params) {
+    Object.entries(params).forEach(([k, v]) => {
+      value = value.replace(`{${k}}`, String(v))
+    })
+  }
+  return value
+}
+
+const LanguageContext = createContext<LanguageContextType>({
+  language: "tr",
+  setLanguage: () => {},
+  t: fallbackT,
+})
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguageState] = useState<Language>("tr")
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     const saved = localStorage.getItem("lang") as Language | null
     if (saved && (saved === "tr" || saved === "en")) {
       setLanguageState(saved)
     }
+    setMounted(true)
   }, [])
 
   function setLanguage(lang: Language) {
@@ -54,9 +70,5 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 }
 
 export function useLanguageContext() {
-  const context = useContext(LanguageContext)
-  if (!context) {
-    throw new Error("useLanguageContext must be used within a LanguageProvider")
-  }
-  return context
+  return useContext(LanguageContext)
 }
