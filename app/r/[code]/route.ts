@@ -50,6 +50,8 @@ export async function GET(
     return NextResponse.redirect(destination.toString())
   } catch (err) {
     console.error("Referral redirect error:", err)
-    return NextResponse.redirect(new URL("https://stoaix.com"))
+    // Still redirect with ref param so cookie gets set even if DB fails
+    const { code } = context.params
+    return NextResponse.redirect(`https://stoaix.com/signup?ref=${code}`)
   }
 }
