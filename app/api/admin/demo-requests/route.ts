@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createServerSupabaseClient } from "@/lib/supabase/server"
+import { createServerSupabaseClient, createServiceRoleClient } from "@/lib/supabase/server"
 
 export async function GET() {
   const supabase = createServerSupabaseClient()
@@ -19,7 +19,8 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const { data: requests, error } = await supabase
+  const serviceClient = createServiceRoleClient()
+  const { data: requests, error } = await serviceClient
     .from("demo_requests")
     .select("*, partners(full_name, email, company_name)")
     .order("created_at", { ascending: false })
@@ -59,8 +60,10 @@ export async function PATCH(request: NextRequest) {
     )
   }
 
+  const serviceClient = createServiceRoleClient()
+
   // Get the request to find the partner
-  const { data: demoRequest } = await supabase
+  const { data: demoRequest } = await serviceClient
     .from("demo_requests")
     .select("partner_id")
     .eq("id", id)
@@ -71,7 +74,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   // Update the request
-  const { error } = await supabase
+  const { error } = await serviceClient
     .from("demo_requests")
     .update({
       status,
@@ -92,7 +95,7 @@ export async function PATCH(request: NextRequest) {
     ? "Your demo account request has been approved."
     : "Your demo account request has been rejected."
 
-  await supabase.from("notifications").insert({
+  await serviceClient.from("notifications").insert({
     partner_id: demoRequest.partner_id,
     type: "demo_request",
     title,

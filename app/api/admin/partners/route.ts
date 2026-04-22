@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createServerSupabaseClient } from "@/lib/supabase/server"
+import { createServerSupabaseClient, createServiceRoleClient } from "@/lib/supabase/server"
 
 export async function GET() {
   const supabase = createServerSupabaseClient()
@@ -19,7 +19,8 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const { data: partners, error } = await supabase
+  const serviceClient = createServiceRoleClient()
+  const { data: partners, error } = await serviceClient
     .from("partners")
     .select("*")
     .order("created_at", { ascending: false })
@@ -60,7 +61,8 @@ export async function PATCH(request: NextRequest) {
   if (status) updates.status = status
   if (tier) updates.tier = tier
 
-  const { error } = await supabase
+  const serviceClient = createServiceRoleClient()
+  const { error } = await serviceClient
     .from("partners")
     .update(updates)
     .eq("id", partner_id)

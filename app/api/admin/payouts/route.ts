@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createServerSupabaseClient } from "@/lib/supabase/server"
+import { createServerSupabaseClient, createServiceRoleClient } from "@/lib/supabase/server"
 
 export async function GET() {
   const supabase = createServerSupabaseClient()
@@ -19,7 +19,8 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const { data: payouts, error } = await supabase
+  const serviceClient = createServiceRoleClient()
+  const { data: payouts, error } = await serviceClient
     .from("payouts")
     .select("*, partners(full_name, email)")
     .order("requested_at", { ascending: false })
@@ -56,9 +57,11 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "payout_id and action required" }, { status: 400 })
   }
 
+  const serviceClient = createServiceRoleClient()
+
   if (action === "approve") {
     // Get payout details
-    const { data: payout } = await supabase
+    const { data: payout } = await serviceClient
       .from("payouts")
       .select("*")
       .eq("id", payout_id)
@@ -69,7 +72,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Update payout status
-    await supabase
+    await serviceClient
       .from("payouts")
       .update({
         status: "completed",
@@ -79,14 +82,14 @@ export async function PATCH(request: NextRequest) {
       .eq("id", payout_id)
 
     // Update partner balances
-    const { data: partner } = await supabase
+    const { data: partner } = await serviceClient
       .from("partners")
       .select("pending_balance, paid_balance")
       .eq("id", payout.partner_id)
       .single()
 
     if (partner) {
-      await supabase
+      await serviceClient
         .from("partners")
         .update({
           pending_balance: (partner.pending_balance || 0) - payout.amount,
@@ -95,7 +98,7 @@ export async function PATCH(request: NextRequest) {
         .eq("id", payout.partner_id)
     }
   } else if (action === "reject") {
-    await supabase
+    await serviceClient
       .from("payouts")
       .update({
         status: "failed",

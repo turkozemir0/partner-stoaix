@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { createServerSupabaseClient } from "@/lib/supabase/server"
+import { createServerSupabaseClient, createServiceRoleClient } from "@/lib/supabase/server"
 import { getTier } from "@/lib/utils"
 
 export async function GET() {
@@ -20,7 +20,8 @@ export async function GET() {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 })
   }
 
-  const { data: conversions, error } = await supabase
+  const serviceClient = createServiceRoleClient()
+  const { data: conversions, error } = await serviceClient
     .from("conversions")
     .select("*, partners(full_name)")
     .order("created_at", { ascending: false })
@@ -57,8 +58,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
   }
 
+  const serviceClient = createServiceRoleClient()
+
   // Create conversion
-  const { error: convError } = await supabase.from("conversions").insert({
+  const { error: convError } = await serviceClient.from("conversions").insert({
     partner_id,
     organization_name,
     organization_id: organization_id || `manual_${Date.now()}`,
@@ -73,7 +76,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Update partner stats
-  const { data: partner } = await supabase
+  const { data: partner } = await serviceClient
     .from("partners")
     .select("active_clients")
     .eq("id", partner_id)
@@ -83,7 +86,7 @@ export async function POST(request: NextRequest) {
     const newActiveClients = (partner.active_clients || 0) + 1
     const newTier = getTier(newActiveClients)
 
-    await supabase
+    await serviceClient
       .from("partners")
       .update({ active_clients: newActiveClients, tier: newTier })
       .eq("id", partner_id)
