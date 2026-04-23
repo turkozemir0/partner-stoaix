@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
+import { BadgePercent, Zap, BarChart3, Gift } from "lucide-react"
 import { useTranslation } from "@/lib/i18n/useTranslation"
 
 export default function RegisterPage() {
@@ -165,15 +166,42 @@ export default function RegisterPage() {
     )
   }
 
+  const benefits = [
+    { icon: BadgePercent, key: "benefit1" },
+    { icon: Zap, key: "benefit2" },
+    { icon: BarChart3, key: "benefit3" },
+    { icon: Gift, key: "benefit4" },
+  ]
+
   // Step 1: Form
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 text-2xl font-bold text-primary font-heading">Stoaix</div>
-          <CardTitle className="text-xl">{t("auth.register.title")}</CardTitle>
-          <CardDescription>{t("auth.register.subtitle")}</CardDescription>
-        </CardHeader>
+      <div className="w-full max-w-md space-y-6">
+        {/* Value Proposition */}
+        <div className="text-center">
+          <div className="mx-auto mb-3 text-2xl font-bold text-primary font-heading">Stoaix</div>
+          <h1 className="text-2xl sm:text-3xl font-bold font-heading text-gray-900 mb-2 leading-tight">
+            {t("auth.register.heroTitle")}
+          </h1>
+          <p className="text-sm text-muted-foreground mb-5">
+            {t("auth.register.heroSubtitle")}
+          </p>
+          <div className="grid grid-cols-2 gap-2.5 text-left">
+            {benefits.map((b) => (
+              <div key={b.key} className="flex items-start gap-2 p-2.5 bg-white rounded-lg border">
+                <b.icon className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                <span className="text-xs font-medium text-gray-700">{t(`auth.register.${b.key}`)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Registration Form */}
+        <Card>
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-xl">{t("auth.register.title")}</CardTitle>
+            <CardDescription>{t("auth.register.subtitle")}</CardDescription>
+          </CardHeader>
         <CardContent>
           <form onSubmit={handleSendOtp} className="space-y-4">
             {error && (
@@ -243,6 +271,7 @@ export default function RegisterPage() {
           </p>
         </CardContent>
       </Card>
+      </div>
     </div>
   )
 }

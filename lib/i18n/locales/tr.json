@@ -19,6 +19,12 @@
       "resendIn": "Tekrar gönder ({seconds}s)"
     },
     "register": {
+      "heroTitle": "Kliniklere Otomasyon Sat, Her Ay Komisyon Kazan",
+      "heroSubtitle": "Teknik bilgi gerektirmez. Stoaix kurulum ve desteği halleder — sen sadece müşteri yönlendir.",
+      "benefit1": "%30'a varan tekrarlayan komisyon",
+      "benefit2": "Kurulum ve destek Stoaix'ten",
+      "benefit3": "Anlık takip paneli",
+      "benefit4": "Ücretsiz pazarlama materyalleri",
       "title": "Partner Olun",
       "subtitle": "Ortaklık programımıza başvurun",
       "fullName": "Ad Soyad",
