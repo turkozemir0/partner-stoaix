@@ -1,6 +1,6 @@
 export type PartnerTier = "starter" | "growth" | "pro"
 export type PartnerStatus = "active" | "suspended" | "pending"
-export type ConversionStatus = "active" | "churned" | "cancelled"
+export type ConversionStatus = "active" | "trial" | "churned" | "cancelled"
 export type CommissionStatus = "calculated" | "confirmed" | "paid"
 export type PayoutMethod = "bank_transfer" | "paypal"
 export type PayoutStatus = "pending" | "processing" | "completed" | "failed"

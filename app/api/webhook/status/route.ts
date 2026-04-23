@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
   }
 
-  if (!["active", "churned", "cancelled"].includes(status)) {
+  if (!["active", "trial", "churned", "cancelled"].includes(status)) {
     return NextResponse.json({ error: "Invalid status" }, { status: 400 })
   }
 

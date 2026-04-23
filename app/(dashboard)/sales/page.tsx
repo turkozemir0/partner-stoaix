@@ -12,7 +12,7 @@ import type { Conversion } from "@/lib/types"
 export default function SalesPage() {
   const { t } = useTranslation()
   const [conversions, setConversions] = useState<Conversion[]>([])
-  const [filter, setFilter] = useState<"all" | "active" | "churned" | "cancelled">("all")
+  const [filter, setFilter] = useState<"all" | "active" | "trial" | "churned" | "cancelled">("all")
   const supabase = createClient()
 
   useEffect(() => {
@@ -46,6 +46,7 @@ export default function SalesPage() {
   const statusVariant = (status: string) => {
     switch (status) {
       case "active": return "success"
+      case "trial": return "outline"
       case "churned": return "destructive"
       case "cancelled": return "warning"
       default: return "secondary"
@@ -55,6 +56,7 @@ export default function SalesPage() {
   const filterLabels: Record<string, string> = {
     all: t("sales.all"),
     active: t("sales.active"),
+    trial: t("sales.trial"),
     churned: t("sales.churned"),
     cancelled: t("sales.cancelled"),
   }
@@ -67,7 +69,7 @@ export default function SalesPage() {
       </div>
 
       <div className="flex gap-2">
-        {(["all", "active", "churned", "cancelled"] as const).map((f) => (
+        {(["all", "active", "trial", "churned", "cancelled"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createServiceRoleClient } from "@/lib/supabase/server"
-import { getTier, getCommissionRate } from "@/lib/utils"
 
 export async function POST(request: NextRequest) {
   // Verify webhook secret
@@ -39,7 +38,7 @@ export async function POST(request: NextRequest) {
     organization_name: org_name,
     plan_type,
     monthly_price,
-    status: "active",
+    status: "trial",
   })
 
   if (convError) {
@@ -52,33 +51,13 @@ export async function POST(request: NextRequest) {
     .update({ conversion_count: link.conversion_count + 1 })
     .eq("id", link.id)
 
-  // Update partner active clients and tier
-  const { data: partner } = await supabase
-    .from("partners")
-    .select("id, active_clients")
-    .eq("id", link.partner_id)
-    .single()
-
-  if (partner) {
-    const newActiveClients = partner.active_clients + 1
-    const newTier = getTier(newActiveClients)
-
-    await supabase
-      .from("partners")
-      .update({
-        active_clients: newActiveClients,
-        tier: newTier,
-      })
-      .eq("id", partner.id)
-
-    // Create notification
-    await supabase.from("notifications").insert({
-      partner_id: link.partner_id,
-      type: "conversion",
-      title: "New Client Signed Up!",
-      message: `${org_name} signed up for the ${plan_type} plan ($${monthly_price}/mo).`,
-    })
-  }
+  // Create notification (no tier/active_clients update — trial doesn't count)
+  await supabase.from("notifications").insert({
+    partner_id: link.partner_id,
+    type: "conversion",
+    title: "New Trial Started",
+    message: `${org_name} started a free trial for the ${plan_type} plan.`,
+  })
 
   return NextResponse.json({ success: true })
 }

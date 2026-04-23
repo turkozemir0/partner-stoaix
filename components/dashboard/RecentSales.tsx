@@ -35,7 +35,7 @@ export function RecentSales({ conversions }: RecentSalesProps) {
                 </div>
                 <div className="text-right">
                   <p className="text-sm font-medium">{formatCurrency(conversion.monthly_price)}/mo</p>
-                  <Badge variant={conversion.status === "active" ? "success" : "destructive"} className="text-[10px]">
+                  <Badge variant={conversion.status === "active" ? "success" : conversion.status === "trial" ? "outline" : "destructive"} className="text-[10px]">
                     {conversion.status}
                   </Badge>
                 </div>

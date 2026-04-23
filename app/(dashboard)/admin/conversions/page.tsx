@@ -104,6 +104,7 @@ export default function AdminConversionsPage() {
                 <td className="px-4 py-3">
                   <span className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${
                     c.status === "active" ? "bg-green-100 text-green-700" :
+                    c.status === "trial" ? "bg-yellow-100 text-yellow-700" :
                     c.status === "churned" ? "bg-red-100 text-red-700" :
                     "bg-gray-100 text-gray-700"
                   }`}>
