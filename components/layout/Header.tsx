@@ -1,11 +1,12 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { Bell, Menu } from "lucide-react"
+import { Bell, Menu, ExternalLink } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 import { MobileNav } from "./MobileNav"
 import { LanguageSwitcher } from "./LanguageSwitcher"
+import { useTranslation } from "@/lib/i18n/useTranslation"
 
 interface Notification {
   id: string
@@ -28,6 +29,7 @@ export function Header({ partnerName }: HeaderProps) {
   const [loadingNotifs, setLoadingNotifs] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const supabase = createClient()
+  const { t } = useTranslation()
 
   useEffect(() => {
     async function fetchUnread() {
@@ -100,6 +102,15 @@ export function Header({ partnerName }: HeaderProps) {
         </Button>
         <div className="flex-1" />
         <div className="flex items-center gap-4">
+          <a
+            href="https://stoaix.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+          >
+            stoaix.com
+            <ExternalLink className="h-3.5 w-3.5" />
+          </a>
           <LanguageSwitcher />
           <div className="relative" ref={dropdownRef}>
             <Button

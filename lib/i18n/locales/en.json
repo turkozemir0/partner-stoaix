@@ -82,7 +82,8 @@
     "adminPartners": "Partners",
     "adminConversions": "Conversions",
     "adminPayouts": "Payouts",
-    "adminDemoRequests": "Demo Requests"
+    "adminDemoRequests": "Demo Requests",
+    "goToStoaix": "Go to stoaix.com"
   },
   "dashboard": {
     "title": "Dashboard",

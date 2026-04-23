@@ -82,7 +82,8 @@
     "adminPartners": "Partnerler",
     "adminConversions": "Dönüşümler",
     "adminPayouts": "Ödemeler",
-    "adminDemoRequests": "Demo Talepleri"
+    "adminDemoRequests": "Demo Talepleri",
+    "goToStoaix": "stoaix.com'a git"
   },
   "dashboard": {
     "title": "Panel",
