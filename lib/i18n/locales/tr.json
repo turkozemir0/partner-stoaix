@@ -304,13 +304,8 @@
   },
   "demoRequest": {
     "title": "Demo Hesabı",
-    "description": "Potansiyel müşterilerinize Stoaix'i tanıtmak için demo hesabı talep edin.",
-    "requestButton": "Demo Hesabı Talep Et",
-    "pending": "Talebiniz inceleniyor",
-    "pendingDescription": "Demo hesabınız hazır olduğunda sizi bilgilendireceğiz.",
-    "approved": "Demo hesabınız onaylandı",
-    "approvedDescription": "Demo hesabınız oluşturuldu. Erişim detayları için e-postanızı kontrol edin.",
-    "rejectedNote": "Önceki talep reddedildi: {note}"
+    "description": "Müşterilerinize Stoaix'i göstermek için demo hesabına göz atın.",
+    "viewButton": "Demo Hesabı Gör"
   },
   "common": {
     "loading": "Yükleniyor...",
