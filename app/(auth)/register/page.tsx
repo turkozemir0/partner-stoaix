@@ -1,7 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { createClient } from "@/lib/supabase/client"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
@@ -9,7 +11,9 @@ import { useTranslation } from "@/lib/i18n/useTranslation"
 
 export default function RegisterPage() {
   const { t } = useTranslation()
-  const [step, setStep] = useState<1 | 2 | 3>(1)
+  const router = useRouter()
+  const supabase = createClient()
+  const [step, setStep] = useState<1 | 2>(1)
   const [fullName, setFullName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -82,8 +86,17 @@ export default function RegisterPage() {
       return
     }
 
-    setStep(3)
-    setLoading(false)
+    // Auto sign in after registration
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
+    if (signInError) {
+      setError(signInError.message)
+      setLoading(false)
+      return
+    }
+
+    document.cookie = `session_started_at=${Date.now()}; path=/; max-age=${72 * 60 * 60}; SameSite=Lax`
+    router.push("/")
+    router.refresh()
   }
 
   async function handleResend() {
@@ -102,25 +115,6 @@ export default function RegisterPage() {
       const data = await res.json()
       setError(data.error)
     }
-  }
-
-  // Step 3: Success
-  if (step === 3) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-xl">{t("auth.register.successTitle")}</CardTitle>
-            <CardDescription>{t("auth.register.successMessage")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/login">
-              <Button variant="outline" className="w-full">{t("auth.register.backToLogin")}</Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
-    )
   }
 
   // Step 2: OTP verification
