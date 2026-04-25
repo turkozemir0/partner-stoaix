@@ -208,7 +208,12 @@
     "saved": "Kaydedildi!",
     "account": "Hesap",
     "partnerId": "Partner ID",
-    "memberSince": "Üyelik tarihi"
+    "memberSince": "Üyelik tarihi",
+    "emailPreferences": "E-posta Tercihleri",
+    "marketingEmails": "Partner program e-postaları",
+    "marketingEmailsDesc": "Partner programıyla ilgili ipuçları, güncellemeler ve kaynaklar alın",
+    "unsubscribed": "Abonelikten çıkıldı",
+    "subscribed": "Abone"
   },
   "admin": {
     "overview": {
@@ -225,6 +230,7 @@
       "title": "Partner Yönetimi",
       "name": "İsim",
       "email": "E-posta",
+      "phone": "Telefon",
       "tier": "Seviye",
       "activeClients": "Aktif Müşteriler",
       "totalEarnings": "Toplam Kazanç",

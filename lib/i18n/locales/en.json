@@ -208,7 +208,12 @@
     "saved": "Saved!",
     "account": "Account",
     "partnerId": "Partner ID",
-    "memberSince": "Member since"
+    "memberSince": "Member since",
+    "emailPreferences": "Email Preferences",
+    "marketingEmails": "Partner program emails",
+    "marketingEmailsDesc": "Receive tips, updates, and resources about the partner program",
+    "unsubscribed": "Unsubscribed",
+    "subscribed": "Subscribed"
   },
   "admin": {
     "overview": {
@@ -225,6 +230,7 @@
       "title": "Partner Management",
       "name": "Name",
       "email": "Email",
+      "phone": "Phone",
       "tier": "Tier",
       "activeClients": "Active Clients",
       "totalEarnings": "Total Earnings",

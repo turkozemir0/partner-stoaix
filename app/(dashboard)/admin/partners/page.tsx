@@ -46,6 +46,7 @@ export default function AdminPartnersPage() {
             <tr>
               <th className="text-left px-4 py-3 font-medium">{t("admin.partners.name")}</th>
               <th className="text-left px-4 py-3 font-medium">{t("admin.partners.email")}</th>
+              <th className="text-left px-4 py-3 font-medium">{t("admin.partners.phone")}</th>
               <th className="text-left px-4 py-3 font-medium">{t("admin.partners.tier")}</th>
               <th className="text-left px-4 py-3 font-medium">{t("admin.partners.activeClients")}</th>
               <th className="text-left px-4 py-3 font-medium">{t("admin.partners.totalEarnings")}</th>
@@ -57,6 +58,7 @@ export default function AdminPartnersPage() {
               <tr key={p.id} className="border-b last:border-0 hover:bg-gray-50">
                 <td className="px-4 py-3 font-medium">{p.full_name}</td>
                 <td className="px-4 py-3 text-muted-foreground">{p.email}</td>
+                <td className="px-4 py-3 text-muted-foreground">{p.phone || "—"}</td>
                 <td className="px-4 py-3">
                   <select
                     value={p.tier}
