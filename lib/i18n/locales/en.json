@@ -310,8 +310,13 @@
   },
   "demoRequest": {
     "title": "Demo Account",
-    "description": "View the demo account to showcase Stoaix to your potential clients.",
-    "viewButton": "View Demo Account"
+    "description": "Request a demo account to showcase Stoaix to your potential clients.",
+    "requestButton": "Request Demo Account",
+    "pending": "Your request is being reviewed",
+    "pendingDescription": "We'll notify you once your demo account is ready.",
+    "approved": "Your demo account is approved",
+    "approvedDescription": "Your demo account has been set up. Check your email for access details.",
+    "rejectedNote": "Previous request was rejected: {note}"
   },
   "common": {
     "loading": "Loading...",
